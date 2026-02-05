@@ -1,0 +1,217 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>My Library</title>
+    <style>
+      :root{
+        --bg:#0b1220;
+        --panel:#0f1a2f;
+        --panel2:#0c172b;
+        --text:#e6edf7;
+        --muted:#9fb0c6;
+        --border:#1c2a46;
+        --accent:#6ea8ff;
+        --danger:#ff6b6b;
+        --ok:#3ddc97;
+      }
+      *{box-sizing:border-box}
+      body{
+        margin:0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+        background: radial-gradient(1200px 600px at 20% 0%, #152b54 0%, var(--bg) 55%) fixed;
+        color:var(--text);
+      }
+      a{color:var(--accent); text-decoration:none}
+      a:hover{text-decoration:underline}
+
+      .container{max-width:1000px; margin:0 auto; padding:28px 18px 48px}
+      .topbar{
+        display:flex; gap:14px; align-items:center; justify-content:space-between;
+        margin-bottom:18px;
+      }
+      .brand{
+        display:flex; flex-direction:column; gap:4px;
+      }
+      .brand h1{margin:0; font-size:28px; letter-spacing:.2px}
+      .brand p{margin:0; color:var(--muted); font-size:14px}
+
+      .actions{display:flex; gap:10px; flex-wrap:wrap}
+      .btn{
+        display:inline-flex; align-items:center; justify-content:center;
+        padding:10px 12px; border-radius:10px; border:1px solid var(--border);
+        background:linear-gradient(180deg, #122545 0%, #0e1d38 100%);
+        color:var(--text); font-weight:600; font-size:14px;
+      }
+      .btn:hover{filter:brightness(1.08); text-decoration:none}
+      .btn.secondary{background:transparent}
+      .btn.danger{
+        border-color:#3a1c2a;
+        background:linear-gradient(180deg, #3a1220 0%, #240b14 100%);
+        color:#ffd6d6;
+      }
+
+      .panel{
+        border:1px solid var(--border);
+        background:linear-gradient(180deg, rgba(255,255,255,.03) 0%, rgba(255,255,255,.01) 100%);
+        border-radius:16px;
+        padding:14px;
+      }
+
+      form.tools{
+        display:flex; gap:10px; flex-wrap:wrap; align-items:end;
+      }
+      .field{
+        display:flex; flex-direction:column; gap:6px;
+        min-width:220px;
+      }
+      label{font-size:12px; color:var(--muted)}
+      input, select{
+        padding:10px 12px;
+        border-radius:10px;
+        border:1px solid var(--border);
+        background:var(--panel2);
+        color:var(--text);
+        outline:none;
+      }
+      input::placeholder{color:#6f84a3}
+      input:focus, select:focus{border-color:#3a63c6; box-shadow:0 0 0 3px rgba(110,168,255,.15)}
+
+      .msg{
+        margin-top:12px;
+        padding:10px 12px;
+        border-radius:12px;
+        border:1px solid var(--border);
+        background:rgba(62, 255, 173, .08);
+        color:#c9ffe9;
+      }
+
+      .grid{
+        margin-top:16px;
+        display:grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap:12px;
+      }
+
+      .card{
+        border:1px solid var(--border);
+        border-radius:16px;
+        background:rgba(15, 26, 47, .65);
+        overflow:hidden;
+        display:flex;
+        gap:12px;
+        padding:12px;
+      }
+      .cover{
+        width:74px; height:110px;
+        border-radius:10px;
+        border:1px solid var(--border);
+        background:rgba(255,255,255,.04);
+        object-fit:cover;
+        flex:0 0 auto;
+      }
+      .meta{display:flex; flex-direction:column; gap:6px; min-width:0}
+      .titleRow{display:flex; align-items:start; justify-content:space-between; gap:10px}
+      .title{
+        font-size:16px; font-weight:800;
+        margin:0;
+        overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+      }
+      .sub{color:var(--muted); font-size:13px}
+      .kv{display:flex; gap:10px; flex-wrap:wrap; color:var(--muted); font-size:12px}
+      .pill{
+        display:inline-flex; align-items:center;
+        padding:4px 8px; border-radius:999px;
+        border:1px solid var(--border);
+        background:rgba(255,255,255,.03);
+      }
+      .deleteForm{margin:0}
+      .smallBtn{
+        padding:7px 10px;
+        border-radius:10px;
+        border:1px solid var(--border);
+        background:transparent;
+        color:var(--text);
+        font-weight:700;
+        cursor:pointer;
+      }
+      .smallBtn:hover{filter:brightness(1.12)}
+      .smallBtn.danger{border-color:#3a1c2a; color:#ffd6d6}
+      .empty{
+        margin-top:18px;
+        color:var(--muted);
+        text-align:center;
+        padding:26px 10px;
+        border:1px dashed var(--border);
+        border-radius:16px;
+        background:rgba(255,255,255,.02);
+      }
+      .resetLink{padding:10px 10px; color:var(--muted)}
+      .resetLink:hover{color:var(--text); text-decoration:none}
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="topbar">
+        <div class="brand">
+          <h1>My Library</h1>
+          <p>Search, sort, add, and delete books.</p>
+        </div>
+        <div class="actions">
+          <a class="btn" href="/add_author">+ Add Author</a>
+          <a class="btn" href="/add_book">+ Add Book</a>
+        </div>
+      </div>
+
+      <div class="panel">
+        <form class="tools" method="get" action="/">
+          <div class="field">
+            <label for="q">Search</label>
+            <input id="q" type="text" name="q" value="{{ q or '' }}" placeholder="title / author / isbn" />
+          </div>
+
+          <div class="field" style="min-width:170px;">
+            <label for="sort">Sort by</label>
+            <select id="sort" name="sort">
+              <option value="title" {% if sort == "title" %}selected{% endif %}>Title</option>
+              <option value="author" {% if sort == "author" %}selected{% endif %}>Author</option>
+            </select>
+          </div>
+
+          <button class="btn" type="submit">Search</button>
+          <a class="resetLink" href="/">Reset</a>
+        </form>
+
+        {% if message %}
+          <div class="msg">{{ message }}</div>
+        {% endif %}
+      </div>
+
+      {% if books|length == 0 %}
+        <div class="empty">No books yet. Add an author, then add a book.</div>
+      {% else %}
+        <div class="grid">
+          {% for book in books %}
+            <div class="card">
+              <img class="cover" src="https://covers.openlibrary.org/b/isbn/{{ book.isbn }}-M.jpg" alt="cover" />
+              <div class="meta">
+                <div class="titleRow">
+                  <p class="title" title="{{ book.title }}">{{ book.title }}</p>
+                  <form class="deleteForm" method="post" action="/book/{{ book.id }}/delete">
+                    <button class="smallBtn danger" type="submit">Delete</button>
+                  </form>
+                </div>
+                <div class="sub">by <strong>{{ book.author.name }}</strong></div>
+                <div class="kv">
+                  {% if book.publication_year %}<span class="pill">Year: {{ book.publication_year }}</span>{% endif %}
+                  <span class="pill">ISBN: {{ book.isbn }}</span>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </body>
+</html>
