@@ -1,9 +1,13 @@
+"""Database models for the library application."""
+
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
 
 class Author(db.Model):
+    """Represents an author in the library database."""
+
     __tablename__ = "authors"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -19,6 +23,8 @@ class Author(db.Model):
 
 
 class Book(db.Model):
+    """Represents a book in the library database."""
+
     __tablename__ = "books"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -28,7 +34,6 @@ class Book(db.Model):
 
     author_id = db.Column(db.Integer, db.ForeignKey("authors.id"), nullable=False)
 
-    # optional relationship (nice to have)
     author = db.relationship("Author", backref=db.backref("books", lazy=True))
 
     def __str__(self):

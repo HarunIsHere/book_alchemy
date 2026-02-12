@@ -1,3 +1,5 @@
+"""Flask application for managing authors and books in a small library."""
+
 import os
 from datetime import date
 
@@ -10,7 +12,9 @@ from data_models import db, Author, Book
 app = Flask(__name__)
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{os.path.join(basedir, 'data/library.sqlite')}"
+app.config["SQLALCHEMY_DATABASE_URI"] = (
+    f"sqlite:///{os.path.join(basedir, 'data/library.sqlite')}"
+)
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db.init_app(app)
@@ -18,7 +22,8 @@ db.init_app(app)
 
 @app.route("/", methods=["GET"])
 def home():
-    sort = request.args.get("sort", "title")  # title | author
+    """Render the home page with optional search and sorting."""
+    sort = request.args.get("sort", "title")
     q = request.args.get("q", "").strip()
     msg = request.args.get("msg", "").strip()
 
@@ -51,6 +56,7 @@ def home():
 
 @app.route("/add_author", methods=["GET", "POST"])
 def add_author():
+    """Add a new author to the database and render the add-author page."""
     message = None
 
     if request.method == "POST":
@@ -59,7 +65,9 @@ def add_author():
         date_of_death_raw = request.form.get("date_of_death", "").strip()
 
         birth_date = date.fromisoformat(birth_date_raw) if birth_date_raw else None
-        date_of_death = date.fromisoformat(date_of_death_raw) if date_of_death_raw else None
+        date_of_death = (
+            date.fromisoformat(date_of_death_raw) if date_of_death_raw else None
+        )
 
         if not name:
             message = "Name is required."
@@ -78,6 +86,7 @@ def add_author():
 
 @app.route("/add_book", methods=["GET", "POST"])
 def add_book():
+    """Add a new book to the database and render the add-book page."""
     message = None
     authors = Author.query.order_by(Author.name.asc()).all()
 
@@ -90,7 +99,9 @@ def add_book():
         if not isbn or not title or not author_id_raw:
             message = "ISBN, Title, and Author are required."
         else:
-            publication_year = int(publication_year_raw) if publication_year_raw else None
+            publication_year = (
+                int(publication_year_raw) if publication_year_raw else None
+            )
             author_id = int(author_id_raw)
 
             book = Book(
@@ -106,13 +117,17 @@ def add_book():
                 message = f"Book '{title}' added successfully."
             except IntegrityError:
                 db.session.rollback()
-                message = f"ISBN '{isbn}' already exists. Please use a unique ISBN or edit the existing book."
+                message = (
+                    f"ISBN '{isbn}' already exists. Please use a unique ISBN or edit "
+                    "the existing book."
+                )
 
     return render_template("add_book.html", authors=authors, message=message)
 
 
 @app.route("/book/<int:book_id>/delete", methods=["POST"])
 def delete_book(book_id: int):
+    """Delete a book; if its author has no remaining books, delete the author."""
     book = Book.query.get_or_404(book_id)
 
     author_id = book.author_id
@@ -120,7 +135,6 @@ def delete_book(book_id: int):
     db.session.delete(book)
     db.session.commit()
 
-    # If the author has no other books, delete the author too (optional per instructions)
     remaining = Book.query.filter_by(author_id=author_id).count()
     if remaining == 0:
         author = Author.query.get(author_id)
@@ -132,7 +146,4 @@ def delete_book(book_id: int):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
-
-# with app.app_context():
-#     db.create_all()
+    app.run(debug=True, host="0.0.0.0", port=5002)
